@@ -8,7 +8,7 @@ clear; close all force; bdclose all; clc;
 
 mdl = 'rlObstacleAvoidance';
 mapName = 'exampleMap';
-doVisualization = false;
+doVisualization = true;
 doTraining = true;
 
 open_system(mdl)
