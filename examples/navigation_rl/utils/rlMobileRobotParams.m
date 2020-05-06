@@ -25,8 +25,8 @@ goalCheckDistance = 0.2;
 
 %% Reinforcement learning agent parameters
 load savedAgent
-maxAngSpeed = 0.3;
-maxLinSpeed = 0.3;
+maxAngSpeed = 1;
+maxLinSpeed = 1;
 
 %% Initial conditions
 initX = 2;
