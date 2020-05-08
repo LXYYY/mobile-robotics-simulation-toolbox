@@ -13,29 +13,43 @@ if isempty(map)
     lidar.maxRange = maxRange;
 end
 
-%     % Randomly generate pose inside the map.
-%     % If the pose is in an unoccupied space and there are no range readings
-%     % nearby, assign this pose to the new simulation run
-%     posFound = false;
-%     while(~posFound)
-%         pos = [diff(map.XWorldLimits)*rand + map.XWorldLimits(1); ...
-%                diff(map.YWorldLimits)*rand + map.YWorldLimits(1); ...
-%                2*pi*rand];
-%         ranges = lidar(pos);
-%         if ~checkOccupancy(map,pos(1:2)') && all(ranges(~isnan(ranges)) >= 0.5)
-%             posFound = true;
-%             in = setVariable(in,'initX', pos(1));
-%             in = setVariable(in,'initY', pos(2));
-%             in = setVariable(in,'initTheta', pos(3));
-%         end
+% Randomly generate pose inside the map.
+% If the pose is in an unoccupied space and there are no range readings
+% nearby, assign this pose to the new simulation run
+% posFound = false;
+% while(~posFound)
+%     pos = [diff(map.XWorldLimits)*rand + map.XWorldLimits(1); ...
+%         diff(map.YWorldLimits)*rand + map.YWorldLimits(1); ...
+%         2*pi*rand];
+%     ranges = lidar(pos);
+%     if ~checkOccupancy(map,pos(1:2)') && all(ranges(~isnan(ranges)) >= 0.5)
+%         posFound = true;
+%         in = setVariable(in,'initX', pos(1));
+%         in = setVariable(in,'initY', pos(2));
+%         in = setVariable(in,'initTheta', pos(3));
 %     end
+% end
 
-in = setVariable(in,'initX', 12);
-in = setVariable(in,'initY', 11);
-in = setVariable(in,'initTheta', pi);
+in = setVariable(in,'initX', 3);
+in = setVariable(in,'initY', 3);
+in = setVariable(in,'initTheta', pi/2);
+
+%%set a random target
+% posFound = false;
+% while(~posFound)
+%     pos = [diff(map.XWorldLimits)*rand + map.XWorldLimits(1); ...
+%         diff(map.YWorldLimits)*rand + map.YWorldLimits(1); ...
+%         2*pi*rand];
+%     ranges = lidar(pos);
+%     if ~checkOccupancy(map,pos(1:2)') && all(ranges(~isnan(ranges)) >= 0.5)
+%         posFound = true;
+%         in = setVariable(in,'tarX', pos(1));
+%         in = setVariable(in,'tarY', pos(2));
+%     end
+% end
 
 % Shuffle the lidar sensor noise seeds
-in = setVariable(in,'lidarNoiseSeeds',randi(intmax,size(lidar.scanAngles)));
+in = setVariable(in,'lidarNoiseSeeds',randi(intmax,size(scanAngles)));
 
 end
 

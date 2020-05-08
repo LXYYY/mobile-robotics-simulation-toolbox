@@ -12,15 +12,15 @@ doVisualization = true;
 doTraining = true;
 
 open_system(mdl)
-rlMobileRobotParams;
 load(mapName)
+rlMobileRobotParams;
 
 %% Create environment interfaces
-Tfinal = 50;
+Tfinal = 30;
 agentBlk = [mdl '/RL Agent'];
-obsInfo = rlNumericSpec([numel(scanAngles) 1],...
-    'LowerLimit',zeros(numel(scanAngles),1),...
-    'UpperLimit',ones(numel(scanAngles),1)*maxRange);
+obsInfo = rlNumericSpec([numState 1],...
+    'LowerLimit',lowerLimit,...
+    'UpperLimit',upperLimit);
 numObservations = obsInfo.Dimension(1);
 
 numActions = 2;
@@ -61,7 +61,7 @@ criticNetwork = connectLayers(criticNetwork,'CriticStateFC2','add/in1');
 criticNetwork = connectLayers(criticNetwork,'CriticActionFC1','add/in2');
 
 % Create the critic representation
-criticOpts = rlRepresentationOptions('LearnRate',1e-3,'L2RegularizationFactor',1e-4,'GradientThreshold',1);
+criticOpts = rlRepresentationOptions('LearnRate',1e-3,'L2RegularizationFactor',1e-4,'GradientThreshold',1,'UseDevice',"gpu");
 critic = rlRepresentation(criticNetwork,obsInfo,actInfo,'Observation',{'State'},'Action',{'Action'},criticOpts);
 
 %% Construct the actor
@@ -75,7 +75,7 @@ actorNetwork = [
     tanhLayer('Name', 'Action')];
 
 % Create the actor representation
-actorOptions = rlRepresentationOptions('LearnRate',1e-4,'L2RegularizationFactor',1e-4,'GradientThreshold',1);
+actorOptions = rlRepresentationOptions('LearnRate',1e-3,'L2RegularizationFactor',1e-4,'GradientThreshold',1,'UseDevice',"gpu");
 actor = rlRepresentation(actorNetwork,obsInfo,actInfo,'Observation',{'State'},'Action',{'Action'},actorOptions);
 
 %% Create the DDPG agent
@@ -96,8 +96,8 @@ trainOpts = rlTrainingOptions(...
     'MaxEpisodes',maxEpisodes, ...
     'MaxStepsPerEpisode',maxSteps, ...
     'ScoreAveragingWindowLength',50, ...
-    'StopTrainingCriteria','AverageReward', ...
-    'StopTrainingValue',5, ...
+    'StopTrainingCriteria','EpisodeCount', ...
+    'StopTrainingValue',10000, ...
     'Verbose', true, ...
     'Plots','training-progress');
 
